@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Cumpleaños Sol</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 20;
+            margin: 0 auto 30px auto;
+        }
+
+        .envelope:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 2;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            clip-path: polygon(0 0, 100% 0, 50% 50%);
+            transform-origin: top;
+            transition: transform 1s ease;
+            z-index: 3;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 10px;
+            z-index: 1;
+        }
+
+        .stamp {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #f1c40f, #e67e22);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8em;
+            color: white;
+            font-weight: bold;
+            transform: rotate(15deg);
+            border: 2px dashed white;
+        }
+
+        .instructions {
+            color: white;
+            font-size: 1.3em;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 90%;
+            max-width: 400px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            padding: 40px 30px;
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            transition: all 1s ease;
+        }
+
+        .card.show {
+            display: flex;
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .card-title {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .personal-name {
+            font-size: 2.2em;
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 10px 0 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card-message {
+            font-size: 1.2em;
+            color: #2c3e50;
+            line-height: 1.6;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .card-emoji {
+            font-size: 3.5em;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .close-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .confetti {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #f1c40f;
+            animation: confetti-fall 5s linear infinite;
+            z-index: 5;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .envelope {
+                width: 250px;
+                height: 170px;
+            }
+            
+            .card-title {
+                font-size: 2em;
+            }
+            
+            .personal-name {
+                font-size: 1.8em;
+            }
+            
+            .card-message {
+                font-size: 1.1em;
+            }
+            
+            .instructions {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="instructions">
+            ¡Haz clic en el sobre para abrir tu sorpresa!
+        </div>
+
+        <div class="envelope" id="envelope">
+            <div class="envelope-body"></div>
+            <div class="envelope-front">
+                <div style="font-size: 3em; margin-bottom: 10px;">✉️</div>
+                <div style="color: #2c3e50; font-weight: bold; font-size: 1.2em;">
+                    Para: Sol
+                </div>
+                <div class="stamp">FELIZ</div>
+            </div>
+            <div class="envelope-flap"></div>
+        </div>
+
+        <div class="card" id="birthdayCard">
+            <div class="card-emoji">🎂</div>
+            <h1 class="card-title">¡Feliz Cumpleaños!</h1>
+            <div class="personal-name">¡Sol!</div>
+            <div class="card-message">
+                En este dia te deseo paz y tranquilidad para afrontar los golpes que da la vida, y te recuerdo que aunque existan malos dias jamas debes dejar caer tu espiritu 
+                ¡Feliz cumple!
+            </div>
+            <div class="card-emoji">🎉 🎁 🥳</div>
+            <button class="close-btn" onclick="closeCard()">Cerrar Tarjeta</button>
+        </div>
+
+        <div id="confettiContainer"></div>
+    </div>
+
+    <script>
+        const envelope = document.getElementById('envelope');
+        const birthdayCard = document.getElementById('birthdayCard');
+        const confettiContainer = document.getElementById('confettiContainer');
+        const instructions = document.querySelector('.instructions');
+
+        // Variables para la música
+        let backgroundMusic = null;
+        let isSoundPlaying = false;
+
+        function playMusic() {
+            if (!backgroundMusic) {
+                backgroundMusic = new Audio();
+                
+                // ⭐ PRIMERO intenta con música local
+                backgroundMusic.src = "musica.mp3";
+                backgroundMusic.volume = 0.4;
+                backgroundMusic.loop = true;
+                
+                // Si falla la música local, usa música online de respaldo
+                backgroundMusic.addEventListener('error', function() {
+                    console.log("Música local no encontrada, usando música online");
+                    // Música de piano tranquilo como respaldo
+                    backgroundMusic.src = "https://assets.mixkit.co/music/preview/mixkit-piano-1181.mp3";
+                    // Intentar reproducir de nuevo con la música de respaldo
+                    setTimeout(() => {
+                        backgroundMusic.play().then(() => {
+                            isSoundPlaying = true;
+                            console.log("Música de respaldo activada");
+                        });
+                    }, 500);
+                });
+            }
+            
+            backgroundMusic.play().then(() => {
+                isSoundPlaying = true;
+                console.log("Música activada");
+            }).catch(error => {
+                console.log("Error al reproducir música:", error);
+            });
+        }
+
+        function stopMusic() {
+            if (backgroundMusic && isSoundPlaying) {
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+                isSoundPlaying = false;
+            }
+        }
+
+        function openEnvelope() {
+            // Animación del sobre
+            envelope.classList.add('open');
+            
+            // Ocultar instrucciones
+            instructions.style.display = 'none';
+            
+            // Esperar a que se abra el sobre y luego mostrar la tarjeta
+            setTimeout(() => {
+                envelope.style.display = 'none';
+                birthdayCard.classList.add('show');
+                
+                // Crear confetti
+                createConfetti();
+                
+                // Activar música automáticamente
+                if (!isSoundPlaying) {
+                    playMusic();
+                }
+            }, 800);
+        }
+
+        function closeCard() {
+            // Ocultar tarjeta
+            birthdayCard.classList.remove('show');
+            
+            // Limpiar confetti
+            confettiContainer.innerHTML = '';
+            
+            // Esperar y mostrar el sobre nuevamente
+            setTimeout(() => {
+                envelope.style.display = 'block';
+                envelope.classList.remove('open');
+                instructions.style.display = 'block';
+            }, 500);
+        }
+
+        function createConfetti() {
+            confettiContainer.innerHTML = '';
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.animationDelay = Math.random() * 5 + 's';
+                confetti.style.width = Math.random() * 15 + 5 + 'px';
+                confetti.style.height = Math.random() * 15 + 5 + 'px';
+                confettiContainer.appendChild(confetti);
+            }
+        }
+
+        // Event listener para el sobre
+        envelope.addEventListener('click', openEnvelope);
+
+        console.log("Página lista. La música SIEMPRE funcionará:");
+        console.log("- Primero intenta con 'musica.mp3' local");
+        console.log("- Si no existe, usa música online de respaldo");
+    </script>
+</body>
+</html>
