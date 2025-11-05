@@ -197,24 +197,42 @@
             transform: scale(1.1);
         }
 
+        /* CAMBIO 1: Confeti en posición fixed para toda la pantalla */
         .confetti {
-            position: absolute;
+            position: fixed;
             width: 15px;
             height: 15px;
             background: #f1c40f;
             animation: confetti-fall 5s linear infinite;
             z-index: 5;
+            pointer-events: none;
         }
 
+        /* CAMBIO 2: Animación mejorada para movimiento más natural */
         @keyframes confetti-fall {
             0% {
-                transform: translateY(-100px) rotate(0deg);
+                transform: translateY(-100px) rotate(0deg) translateX(0);
                 opacity: 1;
             }
+            50% {
+                transform: translateY(50vh) rotate(180deg) translateX(20px);
+                opacity: 0.8;
+            }
             100% {
-                transform: translateY(100vh) rotate(360deg);
+                transform: translateY(100vh) rotate(360deg) translateX(-20px);
                 opacity: 0;
             }
+        }
+
+        /* CAMBIO 3: Contenedor del confeti ocupa toda la pantalla */
+        #confettiContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100;
         }
 
         /* Responsive */
@@ -362,16 +380,20 @@
             }, 500);
         }
 
+        // CAMBIO 4: Función mejorada para confeti en toda la pantalla
         function createConfetti() {
             confettiContainer.innerHTML = '';
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 80; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
+                
+                // Posición aleatoria en toda la pantalla
                 confetti.style.left = Math.random() * 100 + 'vw';
                 confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
                 confetti.style.animationDelay = Math.random() * 5 + 's';
                 confetti.style.width = Math.random() * 15 + 5 + 'px';
                 confetti.style.height = Math.random() * 15 + 5 + 'px';
+                
                 confettiContainer.appendChild(confetti);
             }
         }
